@@ -30,4 +30,5 @@ def show():
 			else:
 				ans[char] = 1
 	return str(ans)
+	#return template(open('show.html').read(),query=json.dumps(ans))
 app.run(host='localhost', port=8080)
