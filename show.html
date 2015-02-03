@@ -8,49 +8,62 @@
     <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="http://getbootstrap.com/examples/justified-nav/justified-nav.css" rel="stylesheet">
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <style>
+    body {
+}
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <div id="D3line" class="jumbotron">
-            <svg id="visualisation" width="1000" height="500"></svg>
+    <script>
+            //Width and height
+            var w = 1000;
+            var h = 500;
+            var barPadding = 1;
+            
+            var dataset = {{!query}};
+            
+            //Create SVG element
+            var svg = d3.select("body")
+                        .append("svg")
+                        .attr("width", w)
+                        .attr("height", h);
 
-        </div>
-    </div>
-    <!-- /container -->
+            svg.selectAll("rect")
+               .data(dataset)
+               .enter()
+               .append("rect")
+               .attr("x", function(d, i) {
+                    return i * (w / dataset.length);
+               })
+               .attr("y", function(d) {
+                    return h - (d.count * 20);
+               })
+               .attr("width", w / dataset.length - barPadding)
+               .attr("height", function(d) {
+                    return d.count * 20;
+               })
+               .attr("fill", function(d) {
+                    return "rgb(0, 0, " + (d.count * 50) + ")";
+               });
 
-        <script>
-function InitChart() {
-var data = '{{ query }}';
-var vis = d3.select("#visualisation"),
-WIDTH = 1000,
-HEIGHT = 500,
-MARGINS = {
-    top: 20,
-    right: 20,
-    bottom: 20,
-    left: 50
-},
-xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain(['a','z']),
-yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(data, function(d) {
-        return (parseInt(d., 10) - 5);
-    }),
-    d3.max(data, function(d) {
-        return parseInt(d.count, 10);
-    })
-]),
-xAxis = d3.svg.axis() // generate an axis
-.scale(xScale); // set the range of the axis
-yAxis = d3.svg.axis() // generate an axis
-.scale(yScale).orient("left");
-vis.append("svg:g") // add a container for the axis
-.attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")") // move it into position
-.call(xAxis); // finally, add the axis to the visualisation
-vis.append("svg:g")
-.attr("transform", "translate(" + (MARGINS.left) + ",0)")
-.call(yAxis);
-}
-InitChart();
+            svg.selectAll("text")
+               .data(dataset)
+               .enter()
+               .append("text")
+               .text(function(d) {
+                    return d.alpha;
+               })
+               .attr("text-anchor", "middle")
+               .attr("x", function(d, i) {
+                    return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;
+               })
+               .attr("y", function(d) {
+                    return h - (d.count * 20) + 14;
+               })
+               .attr("font-family", "sans-serif")
+               .attr("font-size", "11px")
+               .attr("fill", "white");
     </script>
 
 </body>

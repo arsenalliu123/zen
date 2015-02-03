@@ -6,6 +6,8 @@ from bottle import template
 import urllib2
 import json
 import d3py
+import collections
+import string
 
 app = Bottle()
 
@@ -19,7 +21,7 @@ def show():
 	url = "https://api.angel.co/1/search?query="+name+"&type=User"
 	res = urllib2.urlopen(url)
 	data = json.load(res)
-	ans = {}
+	ans = collections.OrderedDict()
 	for i in range(5):
 		tmp = data[i]["name"]
 		tmp = tmp.replace(" ","")
@@ -29,6 +31,10 @@ def show():
 				ans[char] += 1
 			else:
 				ans[char] = 1
-	return str(ans)
-	#return template(open('show.html').read(),query=json.dumps(ans))
+	res = []
+	for index in ans:
+		if ans.has_key(index):
+			res.append({"alpha":index,"count":ans[index]})
+	#return str(ans)
+	return template(open('show.html').read(),query=json.dumps(res))
 app.run(host='localhost', port=8080)
