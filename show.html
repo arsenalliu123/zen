@@ -1,0 +1,58 @@
+ <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="icon" href="http://getbootstrap.com/favicon.ico">
+    <title></title>
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/justified-nav/justified-nav.css" rel="stylesheet">
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div id="D3line" class="jumbotron">
+            <svg id="visualisation" width="1000" height="500"></svg>
+
+        </div>
+    </div>
+    <!-- /container -->
+
+        <script>
+function InitChart() {
+var data = '{{ query }}';
+var vis = d3.select("#visualisation"),
+WIDTH = 1000,
+HEIGHT = 500,
+MARGINS = {
+    top: 20,
+    right: 20,
+    bottom: 20,
+    left: 50
+},
+xScale = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain(['a','z']),
+yScale = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([d3.min(data, function(d) {
+        return (parseInt(d., 10) - 5);
+    }),
+    d3.max(data, function(d) {
+        return parseInt(d.count, 10);
+    })
+]),
+xAxis = d3.svg.axis() // generate an axis
+.scale(xScale); // set the range of the axis
+yAxis = d3.svg.axis() // generate an axis
+.scale(yScale).orient("left");
+vis.append("svg:g") // add a container for the axis
+.attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")") // move it into position
+.call(xAxis); // finally, add the axis to the visualisation
+vis.append("svg:g")
+.attr("transform", "translate(" + (MARGINS.left) + ",0)")
+.call(yAxis);
+}
+InitChart();
+    </script>
+
+</body>
+
+</html>
